@@ -1,0 +1,63 @@
+plugins {
+    id "com.energizedwork.webdriver-binaries" version "1.4"
+}
+
+ext {
+    drivers = ["chrome", "firefox"]
+    gridDrivers = ["chrome", "firefox"]
+    seleniumVersion = "3.11.0"
+}
+
+apply plugin: "groovy"
+
+dependencies {
+    testCompile group: "org.codehaus.groovy", name: "groovy-all", version: "2.4.15"
+    testCompile group: "org.gebish", name: "geb-spock", version: "2.1"
+    testCompile group: "org.spockframework", name: "spock-core", version: "1.1-groovy-2.4"
+    testCompile group: "org.seleniumhq.selenium", name: "selenium-chrome-driver", version: seleniumVersion
+    testCompile group: "org.seleniumhq.selenium", name: "selenium-firefox-driver", version: seleniumVersion
+    testCompile group: "org.seleniumhq.selenium", name: "selenium-ie-driver", version: seleniumVersion
+    testCompile group: "org.seleniumhq.selenium", name: "selenium-support", version: seleniumVersion
+}
+
+test { enabled = false }
+
+webdriverBinaries {
+    chromedriver = "2.33"
+    geckodriver = "0.19.1"
+    iedriverserver {
+        version = '3.8.0'
+        architecture = 'X86'
+    }
+}
+
+gridDrivers.each { driver ->
+    tasks.create("${driver}GridTest", Test) {
+        outputs.upToDateWhen { false }
+        group = JavaBasePlugin.VERIFICATION_GROUP
+        dependsOn rootProject.functionalTestComposeUp
+        systemProperties "geb.env": "grid_${driver}",
+                "geb.build.baseUrl": findProperty("functionalTest.grid.baseUrl").toString(),
+                "geb.build.hubUrl": findProperty("functionalTest.grid.hubUrl").toString()
+    }
+}
+
+drivers.each { driver ->
+    tasks.create("${driver}Test", Test) {
+        outputs.upToDateWhen { false }
+        group = JavaBasePlugin.VERIFICATION_GROUP
+        systemProperties "geb.env": driver,
+                "geb.build.baseUrl": findProperty("functionalTest.baseUrl").toString()
+    }
+}
+
+task seleniumGridTest(type: Test, group: JavaBasePlugin.VERIFICATION_GROUP, description: "Execute test suite using local Selenium WebDrivers.") {
+    gridDrivers.each { seleniumGridTest.dependsOn "${it}GridTest"}
+    finalizedBy rootProject.functionalTestComposeDown
+    enabled = false
+}
+
+task seleniumTest(type: Test, group: JavaBasePlugin.VERIFICATION_GROUP, description: "Execute test suite using Selenium Grid.") {
+    drivers.each { seleniumTest.dependsOn "${it}Test"}
+    enabled = false
+}

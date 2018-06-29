@@ -1,0 +1,35 @@
+name: ${ENVIRONMENT_NAME}
+metricbeat.modules:
+- module: system
+  metricsets: ["cpu", "filesystem", "memory", "network", "process"]
+  enabled: true
+  period: 10s
+  processes: ['.*']
+  cpu_ticks: false
+
+- module: docker
+  metricsets: ["container", "cpu", "diskio", "healthcheck", "info", "memory", "network"]
+  enabled: true
+  period: 10s
+  hosts: ["unix:///var/run/docker.sock"]
+
+- module: elasticsearch
+  metricsets: ["node", "node_stats"]
+  enabled: true
+  period: 10s
+  hosts: ["elasticsearch1:9200", "elasticsearch2:9200", "elasticsearch3:9200"]
+
+- module: mysql
+  metricsets: ["status"]
+  enabled: true
+  period: 10s
+  hosts: ["tcp(db:3306)/"]
+  username: root
+  password: toor
+
+output.elasticsearch:
+  hosts: ["172.15.11.47:9200"]
+
+setup.dashboards.enabled: true
+setup.kibana:
+  host: "172.15.11.47:5601"

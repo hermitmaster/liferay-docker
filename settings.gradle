@@ -1,0 +1,17 @@
+rootProject.name = "liferay-docker"
+
+buildscript {
+    dependencies {
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "1.10.1"
+        classpath group: "net.saliman", name: "gradle-properties-plugin", version: "1.4.6"
+    }
+
+    repositories {
+        jcenter()
+    }
+}
+
+apply plugin: "net.saliman.properties"
+apply plugin: "com.liferay.workspace"
+
+include "functionalTest"

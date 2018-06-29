@@ -1,0 +1,27 @@
+#IntelliJ Files
+.idea
+*.iml
+
+#Eclipse files
+.classpath
+.project
+.settings
+.metadata
+**/bin/
+
+#Gradle files
+build
+out
+build_gradle
+node_modules
+
+#Liferay Workspace
+.gradle/
+bundles/
+.sass-cache
+.web_bundle_build
+gradle-local.properties
+
+#Test generated files
+test-coverage
+test-results

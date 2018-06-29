@@ -1,0 +1,116 @@
+version: '3.6'
+services:
+  db:
+    image: mariadb:10.3
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_USER=lportal
+      - MYSQL_PASSWORD=lportal
+    volumes:
+      - liferay_db:/var/lib/mysql
+  elasticsearch1:
+    image: hermitmaster/elasticsearch-liferay:6.1.4
+    restart: unless-stopped
+    ports:
+      - "9200:9200"
+    environment:
+      - cluster.name=LiferayElasticsearchCluster
+      - bootstrap.memory_lock=true
+      - discovery.zen.ping.unicast.hosts=elasticsearch1,elasticsearch2,elasticsearch3
+      - discovery.zen.minimum_master_nodes=2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - liferay_es1:/usr/share/elasticsearch/data
+  elasticsearch2:
+    image: hermitmaster/elasticsearch-liferay:6.1.4
+    restart: unless-stopped
+    ports:
+      - "9201:9200"
+    environment:
+      - cluster.name=LiferayElasticsearchCluster
+      - bootstrap.memory_lock=true
+      - discovery.zen.ping.unicast.hosts=elasticsearch1,elasticsearch2,elasticsearch3
+      - discovery.zen.minimum_master_nodes=2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - liferay_es2:/usr/share/elasticsearch/data
+  elasticsearch3:
+    image: hermitmaster/elasticsearch-liferay:6.1.4
+    restart: unless-stopped
+    ports:
+      - "9202:9200"
+    environment:
+      - cluster.name=LiferayElasticsearchCluster
+      - bootstrap.memory_lock=true
+      - discovery.zen.ping.unicast.hosts=elasticsearch1,elasticsearch2,elasticsearch3
+      - discovery.zen.minimum_master_nodes=2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - liferay_es3:/usr/share/elasticsearch/data
+  mail:
+    image: mailhog/mailhog
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+  portal:
+    image: hermitmaster/liferay-docker:$PORTAL_TAG
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+      - "11311:11311"
+    environment:
+      - DB_HOST=db:3306
+      - ELASTICSEARCH_HOSTS=elasticsearch1:9300,elasticsearch2:9300,elasticsearch3:9300
+      - LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_HOST=mail
+      - LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_PORT=1025
+      - LIFERAY_MODULE_PERIOD_FRAMEWORK_PERIOD_PROPERTIES_PERIOD_LPKG_PERIOD_INDEX_PERIOD_VALIDATOR_PERIOD_ENABLED=false
+      - LIFERAY_MODULE_PERIOD_FRAMEWORK_PERIOD_PROPERTIES_PERIOD_OSGI_PERIOD_CONSOLE=0.0.0.0:11311
+      - LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD=lportal
+    depends_on:
+      - db
+      - elasticsearch1
+      - elasticsearch2
+      - elasticsearch3
+      - mail
+#  metricbeat:
+#    image: docker.elastic.co/beats/metricbeat:6.2.4
+#    restart: unless-stopped
+#    pid: host
+#    command:
+#      - "-system.hostfs=/hostfs"
+#    environment:
+#      - ENVIRONMENT_NAME=local
+#    volumes:
+#      - ./metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+#      - /proc:/hostfs/proc:ro
+#      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+#      - /:/hostfs:ro
+#  filebeat:
+#    image: docker.elastic.co/beats/filebeat:6.2.4
+#    environment:
+#      - ENVIRONMENT_NAME=local
+#    volumes:
+#      - liferay_filebeat:/usr/share/filebeat/data
+#      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - /var/lib/docker/containers/:/var/lib/docker/containers/:ro
+
+volumes:
+  liferay_db:
+  liferay_es1:
+  liferay_es2:
+  liferay_es3:
+#  liferay_filebeat:

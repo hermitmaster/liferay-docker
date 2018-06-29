@@ -1,0 +1,33 @@
+name: ${ENVIRONMENT_NAME}
+
+filebeat.prospectors:
+- type: log
+  enabled: true
+  paths:
+    - '/var/lib/docker/containers/*/*.log'
+  json.message_key: log
+  json.keys_under_root: true
+  processors:
+    - add_docker_metadata: ~
+  encoding: utf-8
+
+  multiline.pattern: '^[[:space:]]'
+  multiline.negate: false
+  multiline.match: after
+  multiline.max_lines: 1000
+  multiline.timeout: 10s
+
+  max_backoff: 15s
+
+  logging.level: warn
+  logging.metrics.enabled: false
+
+output.elasticsearch:
+  hosts: ["172.15.11.47:9200"]
+  max_retries: 10
+
+setup.dashboards.enabled: true
+setup.kibana:
+  host: "172.15.11.47:5601"
+
+logging.to_files: true

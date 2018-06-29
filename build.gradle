@@ -1,0 +1,77 @@
+buildscript {
+    dependencies {
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.app.docker", version: "1.0.4"
+    }
+}
+
+plugins {
+    id "com.avast.gradle.docker-compose" version "0.7.1"
+//    id "com.bmuschko.docker-remote-api" version "3.2.7"
+}
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+allprojects {
+    buildscript {
+        repositories {
+            jcenter()
+        }
+    }
+
+    repositories {
+        jcenter()
+    }
+}
+
+
+apply plugin: "com.liferay.app.docker"
+
+version = "0.1.0-SNAPSHOT"
+group = "org.hermitmaster"
+
+distBundle {
+    into "${buildDir}/liferay"
+}
+
+dockerCompose {
+    dockerComposeWorkingDirectory = "./docker-compose/"
+    removeVolumes = false
+    waitForTcpPorts = false
+
+    functionalTest {
+        useComposeFiles = ["docker-compose.yml", "docker-compose.functionalTest.yml"]
+    }
+
+    enableTelemetry {
+        useComposeFiles = ["docker-compose.yml", "docker-compose.telemetry.yml"]
+    }
+}
+
+task prepareContext(type: Copy, dependsOn: distBundle, group: "docker", description: "Copies liferay tarball distribution into the Docker build context.") {
+    from ".dockerignore"
+    from "Dockerfile"
+    into buildDir
+}
+
+task buildImage(type: DockerBuildImage, dependsOn: prepareContext, group: "docker", description: "Build Liferay Docker image.") {
+    buildArgs = ["REVISION": "git rev-parse HEAD".execute().text.trim(),
+                 "VERSION": version.toString()]
+    inputDir = buildDir
+    pull = true
+    remove = true
+    // Tag image with current version, git hash, and latest. Version should be used for production deployments,
+    // other tags are simply included for convenience. CI/CD uses the git hash.
+    tags = ["hermitmaster/${project.name}:${version}".toString(),
+            "hermitmaster/${project.name}:${"git rev-parse HEAD".execute().text.trim()}".toString(),
+            "hermitmaster/${project.name}:latest".toString()]
+}
+
+task pushImages(group: "docker", description: "Push Liferay Docker images to the Docker registry.") {
+    // Iterate over all the tags so we can push all the tags in one go
+    buildImage.tags.eachWithIndex { tag, idx ->
+        dependsOn tasks.create("push${idx}", DockerPushImage) {
+            imageName = tag
+        }
+    }
+}
