@@ -1,12 +1,6 @@
-buildscript {
-    dependencies {
-        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.app.docker", version: "1.0.4"
-    }
-}
-
 plugins {
     id "com.avast.gradle.docker-compose" version "0.7.1"
-//    id "com.bmuschko.docker-remote-api" version "3.2.7"
+    id "com.bmuschko.docker-remote-api" version "3.2.7"
 }
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
@@ -23,9 +17,6 @@ allprojects {
         jcenter()
     }
 }
-
-
-apply plugin: "com.liferay.app.docker"
 
 version = "0.1.0-SNAPSHOT"
 group = "org.hermitmaster"

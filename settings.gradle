@@ -1,5 +1,3 @@
-rootProject.name = "liferay-docker"
-
 buildscript {
     dependencies {
         classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "1.10.1"
