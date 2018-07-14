@@ -7,7 +7,6 @@
 .project
 .settings
 .metadata
-**/bin/
 
 #Gradle files
 build

@@ -1,0 +1,1 @@
+CATALINA_OPTS="$CATALINA_OPTS -Dfile.encoding=UTF8 -Djava.net.preferIPv4Stack=true -Duser.timezone=GMT -Dorg.apache.catalina.loader.WebappClassLoader.ENABLE_CLEAR_REFERENCES=false -XX:+UseG1GC -XX:+UseStringDeduplication -XX:-UseBiasedLocking -XX:MaxMetaspaceSize=512m"
