@@ -1,21 +1,21 @@
 version: '3.6'
 services:
   db:
-    image: mariadb:10.3
+    image: postgres:10-alpine
     restart: unless-stopped
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      - MYSQL_ROOT_PASSWORD=toor
-      - MYSQL_USER=lportal
-      - MYSQL_PASSWORD=lportal
+      - POSTGRES_DB=lportal
+      - POSTGRES_USER=lportal
+      - POSTGRES_PASSWORD=lportal
     volumes:
-      - liferay_db:/var/lib/mysql
+      - liferay_db:/var/lib/postgresql/data
   elasticsearch1:
     image: hermitmaster/elasticsearch-liferay:6.1.4
     restart: unless-stopped
     ports:
-      - "9200:9200"
+      - "9201:9200"
     environment:
       - cluster.name=LiferayElasticsearchCluster
       - bootstrap.memory_lock=true
@@ -31,7 +31,7 @@ services:
     image: hermitmaster/elasticsearch-liferay:6.1.4
     restart: unless-stopped
     ports:
-      - "9201:9200"
+      - "9202:9200"
     environment:
       - cluster.name=LiferayElasticsearchCluster
       - bootstrap.memory_lock=true
@@ -47,7 +47,7 @@ services:
     image: hermitmaster/elasticsearch-liferay:6.1.4
     restart: unless-stopped
     ports:
-      - "9202:9200"
+      - "9203:9200"
     environment:
       - cluster.name=LiferayElasticsearchCluster
       - bootstrap.memory_lock=true
@@ -72,7 +72,8 @@ services:
       - "8080:8080"
       - "11311:11311"
     environment:
-      - DB_HOST=db:3306
+      - DEBUG=true
+      - DB_HOST=db:5432
       - ELASTICSEARCH_HOSTS=elasticsearch1:9300,elasticsearch2:9300,elasticsearch3:9300
       - LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_HOST=mail
       - LIFERAY_MAIL_PERIOD_SESSION_PERIOD_MAIL_PERIOD_SMTP_PERIOD_PORT=1025
@@ -85,32 +86,33 @@ services:
       - elasticsearch2
       - elasticsearch3
       - mail
-#  metricbeat:
-#    image: docker.elastic.co/beats/metricbeat:6.2.4
-#    restart: unless-stopped
-#    pid: host
-#    command:
-#      - "-system.hostfs=/hostfs"
-#    environment:
-#      - ENVIRONMENT_NAME=local
-#    volumes:
-#      - ./metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
-#      - /proc:/hostfs/proc:ro
-#      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-#      - /:/hostfs:ro
-#  filebeat:
-#    image: docker.elastic.co/beats/filebeat:6.2.4
-#    environment:
-#      - ENVIRONMENT_NAME=local
-#    volumes:
-#      - liferay_filebeat:/usr/share/filebeat/data
-#      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - /var/lib/docker/containers/:/var/lib/docker/containers/:ro
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:6.3.0
+    restart: unless-stopped
+    pid: host
+    command:
+      - "-system.hostfs=/hostfs"
+    environment:
+      - ENVIRONMENT_NAME=local
+    volumes:
+      - ./metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /:/hostfs:ro
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:6.3.0
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT_NAME=local
+    volumes:
+      - liferay_filebeat:/usr/share/filebeat/data
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers/:/var/lib/docker/containers/:ro
 
 volumes:
   liferay_db:
   liferay_es1:
   liferay_es2:
   liferay_es3:
-#  liferay_filebeat:
+  liferay_filebeat:

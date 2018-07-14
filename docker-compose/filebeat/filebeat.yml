@@ -23,11 +23,11 @@ filebeat.prospectors:
   logging.metrics.enabled: false
 
 output.elasticsearch:
-  hosts: ["172.15.11.47:9200"]
+  hosts: ["elasticsearch-monitoring:9200"]
   max_retries: 10
 
 setup.dashboards.enabled: true
 setup.kibana:
-  host: "172.15.11.47:5601"
+  host: "kibana"
 
 logging.to_files: true
