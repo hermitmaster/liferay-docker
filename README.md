@@ -1,4 +1,4 @@
-# Mission Center R4
+# Docker Liferay
 
 ## Table of contents
 - [Mission Center R4](#mission-center-r4)
