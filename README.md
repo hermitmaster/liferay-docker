@@ -1,17 +1,15 @@
 # Docker Liferay
 
 ## Table of contents
-- [Mission Center R4](#mission-center-r4)
-    - [General Information](#general-information)
-    - [Prerequisites](#prerequisites)
-    - [Getting Started](#getting-started)
-    - [Common Tasks](#common-tasks)
-    - [Helpful Tools](#helpful-tools)
-    - [Versioning and Releases](#versioning-and-releases)
-    - [Docker](#docker)
-    - [Unit Testing](#unit-testing)
+- [General Information](#general-information)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Common Tasks](#common-tasks)
+- [Helpful Tools](#helpful-tools)
+- [Versioning and Releases](#versioning-and-releases)
+- [Docker](#docker)
+- [Unit Testing](#unit-testing)
 - [Functional Testing](functionalTest/README.md)
-- [Git Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
 
 ## General Information
 Please review this entire document before you begin working with the repository. The documentation below will likely 
