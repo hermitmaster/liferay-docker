@@ -5,10 +5,8 @@
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Common Tasks](#common-tasks)
-- [Helpful Tools](#helpful-tools)
 - [Versioning and Releases](#versioning-and-releases)
 - [Docker](#docker)
-- [Unit Testing](#unit-testing)
 - [Functional Testing](functionalTest/README.md)
 
 ## General Information
@@ -26,23 +24,8 @@ as part of the repository, so there is no need to install Gradle on your machine
 - A Java IDE, such as [Eclipse](https://www.eclipse.org/), [VS Code](https://code.visualstudio.com/), or [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 
 ## Required System Environment Variables for Running Locally
-- `NC4_OBFUSCATOR_PASSWORD` - with a value (phrase) longer than 30 characters. Once set and data is being encrypted 
-with this secret, it should never change within an environment.
 - `CATALINA_OPTS` - optional, used to set local JVM parameters such as heap. Recommended setting: `-Xms2g -Xmx4g` If 
 not set, Liferay defaults will be used.
-
-## Helpful Tools
-- [Blade CLI](https://dev.liferay.com/develop/tutorials/-/knowledge_base/7-0/blade-cli)
-- Any MySQL/MariaDB client
-- [Atlassian SourceTree](https://www.sourcetreeapp.com/)
-- Eclipse plugins: 
-  - [Groovy Eclipse Tools](http://dist.springsource.org/snapshot/GRECLIPSE/e4.6/)
-  - [Jspresso Spock Plugin](http://www.jspresso.org/external/updates-snapshot/e44)
-  - [EGit](http://www.eclipse.org/egit/)
-  - [Docker plugin](https://marketplace.eclipse.org/content/eclipse-docker-tooling)
-- If on Windows: Git Bash (included with Git for Windows and recommended), Windows Subsystem for Linux, Cygwin, etc. 
-    Any bash-like command shell is fine.
-
 
 ## Getting Started
 ### Before doing anything, you must download the current Liferay bundle
@@ -118,5 +101,3 @@ Port |Exposed|Purpose
 8000 |Yes   |JPDA port for remote debugging
 8025 |Yes   |Mailhog http UI
 11311|Yes   |GoGo shell port
-
-## Unit Testing
