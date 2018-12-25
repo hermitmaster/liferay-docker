@@ -11,7 +11,7 @@
 
 ## General Information
 Please review this entire document before you begin working with the repository. The documentation below will likely 
-answer a lot of questions and prevent issues getting up and running locally. The Mission Center R4 repository is laid 
+answer a lot of questions and prevent issues getting up and running locally. The repository is laid 
 out as a traditional Liferay 7/DXP workspace. If you have trouble finding anything, reference the 
 [Liferay Workspce Documentation](https://dev.liferay.com/develop/tutorials/-/knowledge_base/7-0/liferay-workspace).
 Tooling is based on  [Gradle 4.2](https://docs.gradle.org/4.2/userguide/userguide.html). The Gradle wrapper is provided 
